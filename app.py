@@ -4,7 +4,7 @@ from yt_extractor import get_info
 import database_service as dbs
 
 
-@st.cache(allow_output_mutation=True)
+@st.cache_data(ttl=300)  # Updated from deprecated @st.cache
 def get_workouts():
     return dbs.get_all_workouts()
 
@@ -36,8 +36,8 @@ if selection == "All workouts":
         ok = st.button('Delete workout', key=wo["video_id"])
         if ok:
             dbs.delete_workout(wo["video_id"])
-            st.legacy_caching.clear_cache()
-            st.experimental_rerun()
+            st.cache_data.clear()  # Updated from deprecated st.legacy_caching.clear_cache()
+            st.rerun()  # Updated from deprecated st.experimental_rerun()
             
         st.video(url)
     else:
@@ -57,7 +57,7 @@ elif selection == "Add workout":
             if st.button("Add workout"):
                 dbs.insert_workout(workout_data)
                 st.text("Added workout!")
-                st.legacy_caching.clear_cache()
+                st.cache_data.clear()  # Updated from deprecated st.legacy_caching.clear_cache()
 else:
     st.markdown(f"## Today's workout")
     
